@@ -1,0 +1,17 @@
+.searchList {
+    display: inline-block;
+    margin-top:4px;
+}
+
+.searchList li {
+    list-style: none;
+    cursor: pointer;
+    padding: 0 6px;
+    background-color:aliceblue;
+    color:#222;
+}
+
+.searchList li:hover {
+    background-color:blue;
+    color:#ddd;
+}
