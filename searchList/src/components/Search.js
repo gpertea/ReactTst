@@ -15,10 +15,10 @@ class Search extends Component {
   }
 
   getFilteredList(s) {
-    let cities = this.state.places.map( item => item.city+' - '+item.state);
+    let items = this.state.places.map( item => item.region+' - '+item.name );
     if (s.length===0) 
         return [];
-    let flt = cities.filter((c) => {
+    let flt = items.filter((c) => {
              const regex = RegExp("\\b"+s,"i");
              return regex.exec(c) !== null;
         });
@@ -33,8 +33,8 @@ class Search extends Component {
   /* DO NOT MODIFY */
   componentDidMount() {
     const allPlaces = [];
-    const endpoint =
-      "https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json";
+    const endpoint = 'data.json';
+    //endpoint could be remote, http returning a JSON object
     fetch(endpoint)
       .then(data => data.json())
       .then(results => {
@@ -49,7 +49,7 @@ class Search extends Component {
 
     return (
       <div>
-        <input type="text" placeholder="Search" value={this.state.srch} onChange={this.changeFilter}/>
+        <input type="text" size="54" placeholder="Search" value={this.state.srch} onChange={this.changeFilter}/>
         <List fltItems={flt} selectCall={this.handleListSel} />
        </div> 
     )
