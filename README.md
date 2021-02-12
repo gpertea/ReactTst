@@ -1,10 +1,11 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Updating 
+## After new cloning:
+npm install 
+
+### Updating (if needed)
 npx browserslist@latest --update-db
 npm update
-
-## Available Scripts
 
 In the project directory, you can run:
 
