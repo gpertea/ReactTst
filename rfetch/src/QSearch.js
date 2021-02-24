@@ -18,7 +18,7 @@ export default function QSearch( props ) {
             if (!ignore) setQResults(resources[qry]);
             return resources[qry];
           }
-          console.log(`sending query ${qry} through axios..`)
+          console.log(`sending query ${qry} through axios..`);
           const result = await axios('https://hn.algolia.com/api/v1/search?query=' + qry, 
                                      { cancelToken: cancel.token } );
           resources[qry] = result.data; // store response
