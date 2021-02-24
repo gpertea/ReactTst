@@ -8,20 +8,20 @@ export default function QSearch( props ) {
     let cancel;
     let ignore=false;
 
-    async function fetchData() {
+    async function fetchData(qry) {
         if (cancel) 
           cancel.cancel(); //cancel the previous request before making a new request
         // Create a new CancelToken
         cancel = axios.CancelToken.source();
         try {
-          if (resources[query]) { // return result if there
-            if (!ignore) setQResults(resources[query]);
-            return resources[query];
+          if (resources[qry]) { // return result if there
+            if (!ignore) setQResults(resources[qry]);
+            return resources[qry];
           }
-          console.log(`sending query ${query} through axios..`)
-          const result = await axios('https://hn.algolia.com/api/v1/search?query=' + query, 
+          console.log(`sending query ${qry} through axios..`)
+          const result = await axios('https://hn.algolia.com/api/v1/search?query=' + qry, 
                                      { cancelToken: cancel.token } );
-          resources[query] = result.data; // store response
+          resources[qry] = result.data; // store response
           if (!ignore) setQResults(result.data);
           return result.data;
       } catch (error) {
@@ -34,15 +34,16 @@ export default function QSearch( props ) {
     }
     
     useEffect(() => {
-      fetchData();    
+      console.log(`QSearch: query changed to: ${query}`);
+      fetchData(query);
       return () => { ignore = true; }
     }, [query]);
 
     useEffect(() => {
         setQuery(props.query);
-        fetchData();    
+        //fetchData();    
         return () => { ignore = true; }
-      }, [props.query]);
+      }, [props.query, props.forceUpdate]);
     
     return (
       <>
