@@ -1,11 +1,16 @@
-import React, {useRef} from 'react';
+import React, {useRef} from 'react'
+import {useQCtx, useQCtxUpdate} from './QCtx'
 
-export default function QInput(props) {
-    let term=props.term;
+// This component needs the ability to send data (the input term) to the QSearch component
+
+export default function QInput() {
+    
+    let [term, forceUpdate]=useQCtx();
     if (!term) term="omnibus";
-    //let data=term;
+    const sendTerm=useQCtxUpdate();
+
     const inputRef=useRef();
-    console.log("QInput: rendering with term="+term);
+    console.log(`QInput: rendering with term=<${term}>`);
     
     /*
     function setTData(v) { //this is silly, we don't need this onChange handler for the input
@@ -17,14 +22,15 @@ export default function QInput(props) {
     function sendTData() {
       let input=inputRef.current.value;
       console.log(`QInput: sending term <${input}> to sibling..`);
-      if (props.onChange) props.onChange(input);
+      sendTerm([input, !forceUpdate]);
     }
 
     return (
-        <>
-          <label> Enter term: </label>
+        <div style={{padding:"1em", border: "2px solid black", borderRadius: "8px 8px" }}> 
+          <h3>QInput component</h3>
+          <label> Enter term </label><br/>
           <input defaultValue={term} ref={inputRef} />
           <button onClick={sendTData}>Send to sibling</button>
-        </>
+        </div>
     )
 }
