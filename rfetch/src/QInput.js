@@ -21,7 +21,7 @@ export default function QInput() {
 
     function sendTData() {
       let input=inputRef.current.value;
-      console.log(`QInput: sending term <${input}> to sibling..`);
+      console.log(`QInput: sending term <${input}> to sibling through context..`);
       sendTerm([input, !forceUpdate]);
     }
 

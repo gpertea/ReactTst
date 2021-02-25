@@ -1,6 +1,6 @@
 import React, {useState, useRef, useEffect} from 'react'
 import axios from 'axios'
-import {useQCtx} from './QCtx'
+import {useQCtx, useQCtxUpdate} from './QCtx'
 
 
 function useFirstRender() {
@@ -11,13 +11,23 @@ function useFirstRender() {
   return isFirstRef.current;
 };
 
+var query;
+
 export default function QSearch( props ) {
     const [qresults, setQResults] = useState({ hits: [] });
-    const [query, setQuery] = useState( 'qsearch' );
+    //const [query, setQuery] = useState( 'qsearch' );
+    if (!query) query='qsearch';
     const [qterm, qforceUpdate] = useQCtx();
+    const updateTerm=useQCtxUpdate();
     const isFirstRender=useFirstRender(); //only true for the first render!
     console.log(`QSearch: rendering with query=${query}, qterm=${qterm}`);
     
+    function setQuery(v) {
+      query=v;
+      console.log(`QSearch: called updateTerm(${query})`);
+      updateTerm([query, !qforceUpdate]);
+    }
+
     let ignore=false;
 
     const resources = {};
@@ -40,27 +50,39 @@ export default function QSearch( props ) {
           return result.data;
       } catch (error) {
           if (axios.isCancel(error)) {
-            console.log("Request canceled", error.message);
+            console.log("Request canceled");
           } else {
             console.log("Something went wrong: ", error.message);
           }
         }
     }
-    
+    /*
     useEffect(() => {
-      console.log(`QSearch: query changed to: ${query}`);
+      console.log(`QSearch: ^^^ effect triggered by query changed to: ${query}`);
       fetchData(query);
       return () => { ignore = true; }
     }, [query]);
-
+   */
+    useEffect(() => {
+      if (isFirstRender) {
+        updateTerm([query, !qforceUpdate]);
+        return;
+      }
+      console.log(`QSearch: ^^^ effect triggered by qterm changed to: ${qterm}`);
+      query=qterm;
+      fetchData(query);
+      return () => { ignore = true; }
+    }, [qterm]);
+    /*
     useEffect(() => {
        if (isFirstRender) return;
-         console.log(`QSearch: qterm changed to: ${qterm}`);
-        setQuery(qterm);
-        //fetchData();    
+         console.log(`QSearch: ^^^ render triggered by qterm change to: ${qterm}`);
+        //setQuery(qterm);
+        query=qterm;
+        fetchData(query);
         return () => { ignore = true; }
       }, [qterm, qforceUpdate]);
-    
+    */
     return (
       <div style={{padding:"1em", border: "2px solid black", borderRadius: "8px 8px" }}> 
         <h3>QSearch component</h3>
